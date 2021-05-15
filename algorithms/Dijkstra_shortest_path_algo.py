@@ -1,0 +1,56 @@
+import sys
+
+class Graph():
+
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = [[0 for column in range(vertices)] for row in range(vertices)]
+
+    def printPath(self, dist):
+        print("Vertex \tDistance from source")
+        for v in range(self.V):
+            print(v, "\t\t", dist[v])
+
+    def minDistance(self, dist, shortestPathSet):
+        min = sys.maxsize
+
+        for v in range(self.V): # search shortest path node not included in shortest path tree
+            if dist[v] < min and shortestPathSet[v] == False:
+                min = dist[v]
+                min_index = v
+
+        return min_index
+
+
+    def dijkstra(self, src):
+
+        dist = [sys.maxsize] * self.V
+        dist[src] = 0
+        shortestPathSet = [False] * self.V
+
+        for x in range(self.V):
+            u = self.minDistance(dist, shortestPathSet) # find shortest path not included in shortest path set. u is src for first iteration
+            shortestPathSet[u] = True
+
+            for v in range(self.V): # update distance of adjacent vertices of picked vertex only if current distance is greater than new distance and not included in shortest path tree
+                if self.graph[u][v] > 0 and shortestPathSet[v] == False and dist[v] > dist[u] + self.graph[u][v]:
+                    dist[v] = dist[u] + self.graph[u][v]
+
+        self.printPath(dist)
+
+
+g = Graph(9)
+g.graph = [[0, 4, 0, 0, 0, 0, 0, 8, 0],
+           [4, 0, 8, 0, 0, 0, 0, 11, 0],
+           [0, 8, 0, 7, 0, 4, 0, 0, 2],
+           [0, 0, 7, 0, 9, 14, 0, 0, 0],
+           [0, 0, 0, 9, 0, 10, 0, 0, 0],
+           [0, 0, 4, 14, 10, 0, 2, 0, 0],
+           [0, 0, 0, 0, 0, 2, 0, 1, 6],
+           [8, 11, 0, 0, 0, 0, 1, 0, 7],
+           [0, 0, 2, 0, 0, 0, 6, 7, 0]
+           ];
+
+g.dijkstra(0);
+
+
